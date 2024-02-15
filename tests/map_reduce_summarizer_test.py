@@ -1,0 +1,30 @@
+import unittest
+
+from summarizer import map_reduce_summarizer
+from tests.utils.cosine_similarity import compare_semantic_similarity
+
+
+class MyTestCase(unittest.TestCase):
+    def test_map_reduce_summarizer(self):
+        # given
+        with open("tests/resources/economy_of_singapore.txt") as economy_text:
+            original_text = economy_text.read()
+
+        # when
+        result = map_reduce_summarizer.summarize(original_text, breakpoint_percentile_threshhold=98)
+
+        # then
+        print(f"original text: \n{original_text}")
+        print("\n\n==================\n\n")
+        print(f"summarized text: \n{result}")
+        similarity = compare_semantic_similarity(original_text, result)
+        print(f"similarity: {similarity}")
+        print(f"length of original text: {len(original_text)}")
+        print(f"length of summarized text: {len(result)}")
+        self.assertTrue(similarity > 0.7, "Similarity should be high.")
+        self.assertTrue(len(result) < len(original_text) * 0.25,
+                        "Summarized text should be shorter than 25% of original.")
+
+
+if __name__ == '__main__':
+    unittest.main()
